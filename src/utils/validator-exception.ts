@@ -7,7 +7,7 @@ export const validatorException = (errors: ValidationError[]) => {
   });
 
   return new BadRequestException({
-    status_code: 400,
+    statusCode: 400,
     error: 'Bad Request',
     message,
   });
