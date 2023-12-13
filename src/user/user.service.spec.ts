@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { userProviders } from './user.provider';
+import { RegisterDto } from 'auth/dto/register-user.dto';
+import { User } from './entities/user';
 import { UserService } from './user.service';
 
 describe('UserService', () => {
@@ -8,7 +9,13 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService, ...userProviders],
+      providers: [
+        UserService,
+        {
+          provide: 'USER_REPOSITORY',
+          useValue: User,
+        },
+      ],
     }).compile();
 
     service = module.get<UserService>(UserService);
