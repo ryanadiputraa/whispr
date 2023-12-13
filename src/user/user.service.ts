@@ -1,4 +1,11 @@
-import { BadRequestException, Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UniqueConstraintError } from 'sequelize';
 import { v4 as uuid } from 'uuid';
@@ -14,14 +21,14 @@ export class UserService {
   async createUser(registerDto: RegisterDto): Promise<User> {
     try {
       const hashedPassword = await bcrypt.hash(registerDto.password, 15);
-      const { email, firstName, lastName } = registerDto;
+      const { email, first_name, last_name } = registerDto;
 
       const data = {
         id: uuid(),
         email,
         password: hashedPassword,
-        firstName,
-        lastName,
+        firstName: first_name,
+        lastName: last_name,
         created_at: new Date(),
         updated_at: new Date(),
       };
@@ -31,8 +38,23 @@ export class UserService {
       return user;
     } catch (error) {
       if (error instanceof UniqueConstraintError) {
-        throw new BadRequestException('email already taken');
+        throw new BadRequestException({ message: 'email already taken' });
       }
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if (!user) throw new BadRequestException({ message: "user with given email didn't exists" });
+      return user;
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
       throw new InternalServerErrorException();
     }
   }

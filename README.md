@@ -1,8 +1,10 @@
 # Whispr
 
-Silent meet application backend service
+Silent meet application backend service.
 
 Built using NestJS and Socket.io for real time data stream.
+
+ERD: https://dbdiagram.io/d/whispr-6579ec4956d8064ca0f8f208
 
 ## Installation
 

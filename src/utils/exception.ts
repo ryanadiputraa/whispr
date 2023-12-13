@@ -1,12 +1,14 @@
-import { BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
+import { HttpException, InternalServerErrorException, Logger } from '@nestjs/common';
 
 export const handleServiceException = (error: any, controllerName: string) => {
   const logger = new Logger(controllerName);
 
-  if (error instanceof BadRequestException) {
-    throw new BadRequestException(error.message);
+  if (error instanceof HttpException) {
+    throw error;
   }
 
   logger.error(error);
-  throw new InternalServerErrorException();
+  throw new InternalServerErrorException({
+    message: 'Internal Server Error',
+  });
 };

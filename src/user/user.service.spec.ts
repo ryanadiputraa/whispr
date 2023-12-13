@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { RegisterDto } from 'auth/dto/register-user.dto';
 import { User } from './entities/user';
 import { UserService } from './user.service';
 

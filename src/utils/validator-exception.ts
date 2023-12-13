@@ -1,14 +1,13 @@
 import { BadRequestException, ValidationError } from '@nestjs/common';
 
-export const validatorException = (errors: ValidationError[]) => {
-  const message = {};
-  errors.forEach((error) => {
-    message[error.property] = error.constraints[Object.keys(error.constraints)[0]];
+export const validatorException = (error: ValidationError[]) => {
+  const errors = {};
+  error.forEach((error) => {
+    errors[error.property] = error.constraints[Object.keys(error.constraints)[0]];
   });
 
   return new BadRequestException({
-    statusCode: 400,
-    error: 'Bad Request',
-    message,
+    message: 'Invalid params',
+    errors,
   });
 };
