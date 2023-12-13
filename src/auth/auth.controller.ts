@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
 
-import { UserService } from 'src/user/user.service';
-import { handleServiceException } from 'src/utils/exception';
+import { UserService } from 'user/user.service';
+import { handleServiceException } from 'utils/exception';
 import { RegisterDto } from './dto/register-user.dto';
 
 @Controller('auth')

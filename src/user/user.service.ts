@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { UniqueConstraintError } from 'sequelize';
 import { v4 as uuid } from 'uuid';
 
-import { RegisterDto } from 'src/auth/dto/register-user.dto';
+import { RegisterDto } from 'auth/dto/register-user.dto';
 import { User } from './entities/user';
 
 @Injectable()
