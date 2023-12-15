@@ -44,6 +44,22 @@ export class UserService {
     }
   }
 
+  async getUserById(id: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: {
+          id: id,
+        },
+        attributes: ['id', 'email', 'first_name', 'last_name'],
+      });
+      if (!user) throw new BadRequestException({ message: "user with given id didn't exists" });
+      return user;
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new InternalServerErrorException();
+    }
+  }
+
   async getUserByEmail(email: string): Promise<User> {
     try {
       const user = await this.userRepository.findOne({
