@@ -18,7 +18,7 @@ async function bootstrap() {
 
   app.enableCors({ origin: true, exposedHeaders: ['*'] });
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 8080;
   await app.listen(port);
   logger.log(`running server on port ${port}`);
 }
