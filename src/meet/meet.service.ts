@@ -1,5 +1,6 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
+import { WsErrorResponse } from './dto/ws-event.dto';
 import { MeetSessions } from './entities/meet';
 
 @Injectable()
@@ -31,6 +32,7 @@ export class MeetService {
 
       return sessionId;
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -40,13 +42,15 @@ export class MeetService {
       this.logger.log(`meet session "${sessionId}" has ended`);
       delete this.meetSessions[sessionId];
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
 
   addClient(sessionId: string, clientId: string) {
     try {
-      const isModerator = this.meetSessions[sessionId][clientId] ?? false;
+      if (!this.meetSessions[sessionId]) throw new WsErrorResponse(`meeting ${sessionId} session didn' exists`);
+      const isModerator = this.meetSessions[sessionId]?.[clientId] ?? false;
 
       this.meetSessions[sessionId] = {
         ...this.meetSessions[sessionId],
@@ -55,21 +59,27 @@ export class MeetService {
 
       this.logger.log(`user "${clientId}" join meet session "${sessionId}"`);
     } catch (error) {
+      if (error instanceof WsErrorResponse) {
+        this.logger.warn(error);
+        throw new WsErrorResponse(error.message);
+      }
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
 
   deleteClient(sessionId: string, clientId: string) {
     try {
-      const isModerator = this.meetSessions[sessionId][clientId];
+      const isModerator = this.meetSessions[sessionId]?.[clientId];
 
       if (isModerator) {
         if (Object.keys(this.meetSessions[sessionId]).length <= 1) this.endMeet(sessionId);
       } else {
         this.logger.log(`user "${clientId}" leave meet session "${sessionId}"`);
-        delete this.meetSessions[sessionId][clientId];
+        delete this.meetSessions[sessionId]?.[clientId];
       }
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
