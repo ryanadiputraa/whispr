@@ -16,6 +16,7 @@ export class MeetGateway {
     try {
       if (!data.roomId || !data.userId) return;
       this.meetService.addClient(data.roomId, data.userId);
+      socket.emit('joined');
     } catch (error) {
       socket.emit('error', { message: error.message ?? 'unkown error occured' });
     }
