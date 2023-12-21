@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards } from '@nestjs/common';
+import { Controller, Post, Request, UseGuards } from '@nestjs/common';
 
 import { AuthGuard } from 'auth/auth.guard';
 import { handleServiceException } from 'utils/exception';
@@ -10,10 +10,10 @@ export class MeetController {
 
   @UseGuards(AuthGuard)
   @Post()
-  generateMeetSessionId() {
+  generateMeetSessionId(@Request() req) {
     try {
       return {
-        data: this.meetService.generateMeetSessionId(),
+        data: this.meetService.createNewMeet(req.user?.sub ?? ''),
       };
     } catch (error) {
       handleServiceException(error, MeetController.name);

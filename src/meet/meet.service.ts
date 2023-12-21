@@ -1,13 +1,16 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
+import { MeetSessions } from './entities/meet';
+
 @Injectable()
 export class MeetService {
   private readonly logger = new Logger(MeetService.name);
   private sessionIdCharacters = 'abcdefghijklmnopqrstuvwxyz';
   private sessionIdLength = 4;
   private sessionIdSequence = 3;
+  private meetSessions: MeetSessions = {};
 
-  generateMeetSessionId(): string {
+  createNewMeet(clientId: string): string {
     try {
       const idSets: string[] = [];
 
@@ -22,7 +25,50 @@ export class MeetService {
 
       const sessionId = idSets.join('-');
       this.logger.log(`new meeting session: ${sessionId}`);
+      this.meetSessions[sessionId] = {
+        [clientId]: true,
+      };
+
       return sessionId;
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  endMeet(sessionId: string) {
+    try {
+      this.logger.log(`meet session "${sessionId}" has ended`);
+      delete this.meetSessions[sessionId];
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  addClient(sessionId: string, clientId: string) {
+    try {
+      const isModerator = this.meetSessions[sessionId][clientId] ?? false;
+
+      this.meetSessions[sessionId] = {
+        ...this.meetSessions[sessionId],
+        [clientId]: isModerator,
+      };
+
+      this.logger.log(`user "${clientId}" join meet session "${sessionId}"`);
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  deleteClient(sessionId: string, clientId: string) {
+    try {
+      const isModerator = this.meetSessions[sessionId][clientId];
+
+      if (isModerator) {
+        if (Object.keys(this.meetSessions[sessionId]).length <= 1) this.endMeet(sessionId);
+      } else {
+        this.logger.log(`user "${clientId}" leave meet session "${sessionId}"`);
+        delete this.meetSessions[sessionId][clientId];
+      }
     } catch (error) {
       throw new InternalServerErrorException();
     }
