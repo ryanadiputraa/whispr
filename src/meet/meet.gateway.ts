@@ -15,8 +15,8 @@ export class MeetGateway {
   handleJoinMeeting(@MessageBody() data: MeetSession, @ConnectedSocket() socket: Socket) {
     try {
       if (!data.roomId || !data.userId) return;
-      this.meetService.addClient(data.roomId, data.userId);
-      socket.emit('joined');
+      const isModerator = this.meetService.addClient(data.roomId, data.userId);
+      socket.emit('joined', { isModerator });
     } catch (error) {
       socket.emit('error', { message: error.message ?? 'unkown error occured' });
     }

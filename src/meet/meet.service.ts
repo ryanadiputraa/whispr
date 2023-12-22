@@ -47,7 +47,7 @@ export class MeetService {
     }
   }
 
-  addClient(sessionId: string, clientId: string) {
+  addClient(sessionId: string, clientId: string): boolean {
     try {
       if (!this.meetSessions[sessionId]) throw new WsErrorResponse(`meeting ${sessionId} session didn' exists`);
       const isModerator = this.meetSessions[sessionId]?.[clientId] ?? false;
@@ -58,6 +58,7 @@ export class MeetService {
       };
 
       this.logger.log(`user "${clientId}" join meet session "${sessionId}"`);
+      return isModerator;
     } catch (error) {
       if (error instanceof WsErrorResponse) {
         this.logger.warn(error);
