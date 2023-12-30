@@ -1,13 +1,24 @@
-import { Column, DataType, Default, ForeignKey, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  HasMany,
+  Model,
+  NotNull,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
-import { Meet } from '.';
+import { Meet, Response } from '.';
 
 @Table
 export class Question extends Model {
   @PrimaryKey
   @Default(DataType.UUID)
   @Column({
-    type: DataType.STRING,
+    type: DataType.UUID,
     allowNull: false,
   })
   id: string;
@@ -16,10 +27,13 @@ export class Question extends Model {
   @NotNull
   @Column({
     field: 'meet_id',
-    type: DataType.STRING,
+    type: DataType.UUID,
     allowNull: false,
   })
   meetId: string;
+
+  @BelongsTo(() => Meet)
+  meet: Meet;
 
   @NotNull
   @Column({
@@ -35,4 +49,15 @@ export class Question extends Model {
     allowNull: false,
   })
   createdAt: Date;
+
+  @NotNull
+  @Column({
+    field: 'updated_at',
+    type: DataType.DATE,
+    allowNull: false,
+  })
+  updatedAt: Date;
+
+  @HasMany(() => Response)
+  resopnses: Response[];
 }

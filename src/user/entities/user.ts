@@ -1,9 +1,10 @@
-import { Column, DataType, Default, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
+import { Meet } from 'meet/entities';
+import { Column, DataType, Default, HasMany, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
 
 @Table
 export class User extends Model {
   @PrimaryKey
-  @Default(DataType.UUIDV4)
+  @Default(DataType.UUID)
   @Column({
     type: DataType.UUID,
     allowNull: false,
@@ -56,4 +57,7 @@ export class User extends Model {
     allowNull: false,
   })
   updatedAt: Date;
+
+  @HasMany(() => Meet)
+  meets: Meet[];
 }

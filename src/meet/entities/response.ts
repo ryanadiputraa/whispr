@@ -1,4 +1,14 @@
-import { Column, DataType, Default, ForeignKey, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  DataType,
+  Default,
+  ForeignKey,
+  Model,
+  NotNull,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 
 import { Question } from '.';
 
@@ -7,7 +17,7 @@ export class Response extends Model {
   @PrimaryKey
   @Default(DataType.UUID)
   @Column({
-    type: DataType.STRING,
+    type: DataType.UUID,
     allowNull: false,
   })
   id: string;
@@ -16,10 +26,13 @@ export class Response extends Model {
   @NotNull
   @Column({
     field: 'question_id',
-    type: DataType.STRING,
+    type: DataType.UUID,
     allowNull: false,
   })
   questionId: string;
+
+  @BelongsTo(() => Question)
+  question: Question;
 
   @NotNull
   @Column({
@@ -33,7 +46,7 @@ export class Response extends Model {
     type: DataType.STRING,
     allowNull: false,
   })
-  answer: string;
+  response: string;
 
   @NotNull
   @Column({
