@@ -11,20 +11,24 @@ export class MeetService {
   private sessionIdSequence = 3;
   private meetSessions: MeetSessions = {};
 
+  generateMeetId(): string {
+    const idSets: string[] = [];
+
+    for (let i = 0; i < this.sessionIdSequence; i++) {
+      let chars = '';
+      for (let j = 0; j < this.sessionIdLength; j++) {
+        const randomIndex = Math.floor(Math.random() * this.sessionIdCharacters.length);
+        chars += this.sessionIdCharacters.charAt(randomIndex);
+      }
+      idSets.push(chars);
+    }
+
+    return idSets.join('-');
+  }
+
   createNewMeet(clientId: string): string {
     try {
-      const idSets: string[] = [];
-
-      for (let i = 0; i < this.sessionIdSequence; i++) {
-        let chars = '';
-        for (let j = 0; j < this.sessionIdLength; j++) {
-          const randomIndex = Math.floor(Math.random() * this.sessionIdCharacters.length);
-          chars += this.sessionIdCharacters.charAt(randomIndex);
-        }
-        idSets.push(chars);
-      }
-
-      const sessionId = idSets.join('-');
+      const sessionId = this.generateMeetId();
       this.logger.log(`new meeting session: ${sessionId}`);
       this.meetSessions[sessionId] = {
         [clientId]: true,
