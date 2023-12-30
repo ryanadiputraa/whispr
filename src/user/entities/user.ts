@@ -1,4 +1,5 @@
 import { Column, DataType, Default, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
+
 @Table
 export class User extends Model {
   @PrimaryKey

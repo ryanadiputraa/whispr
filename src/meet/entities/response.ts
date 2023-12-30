@@ -1,15 +1,9 @@
 import { Column, DataType, Default, ForeignKey, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
 
-import { User } from 'user/entities/user';
-
-export type MeetSessions = {
-  [meetId: string]: {
-    [client: string]: boolean; // true = moderator
-  };
-};
+import { Question } from '.';
 
 @Table
-export class Meet extends Model {
+export class Response extends Model {
   @PrimaryKey
   @Default(DataType.UUID)
   @Column({
@@ -18,14 +12,14 @@ export class Meet extends Model {
   })
   id: string;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Question)
   @NotNull
   @Column({
-    field: 'user_id',
+    field: 'question_id',
     type: DataType.STRING,
     allowNull: false,
   })
-  userId: string;
+  questionId: string;
 
   @NotNull
   @Column({
@@ -36,16 +30,24 @@ export class Meet extends Model {
 
   @NotNull
   @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  answer: string;
+
+  @NotNull
+  @Column({
     field: 'created_at',
     type: DataType.DATE,
     allowNull: false,
   })
   createdAt: Date;
 
+  @NotNull
   @Column({
-    field: 'ended_at',
+    field: 'updated_at',
     type: DataType.DATE,
     allowNull: false,
   })
-  endedAt: Date;
+  updatedAt: Date;
 }
