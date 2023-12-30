@@ -10,10 +10,10 @@ export class MeetController {
 
   @UseGuards(AuthGuard)
   @Post()
-  generateMeetSessionId(@Request() req) {
+  async generateMeetSessionId(@Request() req) {
     try {
       return {
-        data: this.meetService.createNewMeet(req.user?.sub ?? ''),
+        data: await this.meetService.createNewMeet(req.user?.sub ?? ''),
       };
     } catch (error) {
       handleServiceException(error, MeetController.name);

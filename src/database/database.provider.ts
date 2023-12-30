@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 
+import { Meet, Question, Response } from 'meet/entities';
 import { User } from 'user/entities/user';
 
 export const databaseProviders = [
@@ -15,7 +16,7 @@ export const databaseProviders = [
         database: process.env.DB_DATABASE,
         timezone: '+00:00',
       });
-      sequelize.addModels([User]);
+      sequelize.addModels([User, Meet, Question, Response]);
       await sequelize.sync();
       return sequelize;
     },

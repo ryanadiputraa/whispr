@@ -20,7 +20,7 @@ export type MeetSessions = {
   };
 };
 
-@Table
+@Table({ timestamps: false })
 export class Meet extends Model {
   @PrimaryKey
   @Default(DataType.UUID)
@@ -44,19 +44,18 @@ export class Meet extends Model {
 
   @NotNull
   @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name: string;
+
+  @NotNull
+  @Column({
     field: 'created_at',
     type: DataType.DATE,
     allowNull: false,
   })
   createdAt: Date;
-
-  @NotNull
-  @Column({
-    field: 'updated_at',
-    type: DataType.DATE,
-    allowNull: false,
-  })
-  updatedAt: Date;
 
   @Column({
     field: 'ended_at',

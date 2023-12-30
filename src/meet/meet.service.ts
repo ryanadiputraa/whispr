@@ -1,7 +1,7 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
 import { WsErrorResponse } from './dto/ws-event.dto';
-import { MeetSessions } from './entities/meet';
+import { Meet, MeetSessions } from './entities/meet';
 
 @Injectable()
 export class MeetService {
@@ -10,6 +10,8 @@ export class MeetService {
   private sessionIdLength = 4;
   private sessionIdSequence = 3;
   private meetSessions: MeetSessions = {};
+
+  constructor(@Inject('MEET_REPOSITORY') private meetRepository: typeof Meet) {}
 
   generateMeetId(): string {
     const idSets: string[] = [];
@@ -26,13 +28,21 @@ export class MeetService {
     return idSets.join('-');
   }
 
-  createNewMeet(clientId: string): string {
+  async createNewMeet(clientId: string): Promise<string> {
     try {
       const sessionId = this.generateMeetId();
       this.logger.log(`new meeting session: ${sessionId}`);
       this.meetSessions[sessionId] = {
         [clientId]: true,
       };
+
+      await this.meetRepository.create({
+        id: sessionId,
+        userId: clientId,
+        name: 'Silent Meet', // TODO: get user input
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
       return sessionId;
     } catch (error) {
@@ -41,9 +51,10 @@ export class MeetService {
     }
   }
 
-  endMeet(sessionId: string) {
+  async endMeet(sessionId: string) {
     try {
       this.logger.log(`meet session "${sessionId}" has ended`);
+      await this.meetRepository.update({ endedAt: new Date() }, { where: { id: sessionId } });
       delete this.meetSessions[sessionId];
     } catch (error) {
       this.logger.error(error);
@@ -73,12 +84,12 @@ export class MeetService {
     }
   }
 
-  deleteClient(sessionId: string, clientId: string) {
+  async deleteClient(sessionId: string, clientId: string) {
     try {
       const isModerator = this.meetSessions[sessionId]?.[clientId];
 
       if (isModerator) {
-        if (Object.keys(this.meetSessions[sessionId]).length <= 1) this.endMeet(sessionId);
+        if (Object.keys(this.meetSessions[sessionId]).length <= 1) await this.endMeet(sessionId);
       } else {
         this.logger.log(`user "${clientId}" leave meet session "${sessionId}"`);
         delete this.meetSessions[sessionId]?.[clientId];

@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { MeetController } from './meet.controller';
 import { MeetGateway } from './meet.gateway';
+import { meetProviders } from './meet.provider';
 import { MeetService } from './meet.service';
 
 @Module({
@@ -14,7 +15,7 @@ import { MeetService } from './meet.service';
       }),
     }),
   ],
-  providers: [MeetService, MeetGateway],
+  providers: [MeetService, MeetGateway, ...meetProviders],
   controllers: [MeetController],
 })
 export class MeetModule {}
