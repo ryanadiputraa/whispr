@@ -59,5 +59,5 @@ export class Question extends Model {
   updatedAt: Date;
 
   @HasMany(() => Response)
-  resopnses: Response[];
+  responses: Response[];
 }

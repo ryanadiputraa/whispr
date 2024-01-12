@@ -119,9 +119,24 @@ export class MeetService {
     }
   }
 
+  async listQuestions(sessionId: string): Promise<Question[]> {
+    try {
+      return await this.questionRepository.findAll({
+        where: {
+          meetId: sessionId,
+        },
+        include: {
+          model: Response,
+        },
+      });
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async saveResponse(questionId: string, id: string, username: string, response: string) {
     try {
-      this.logger.log('new response: ', questionId, username, response);
       await this.responseRepository.create({
         id: id,
         questionId: questionId,

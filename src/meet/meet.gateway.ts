@@ -13,12 +13,13 @@ export class MeetGateway {
   constructor(private meetService: MeetService) {}
 
   @SubscribeMessage('join')
-  handleJoinMeeting(@MessageBody() { roomId, userId }: MeetSession, @ConnectedSocket() socket: Socket) {
+  async handleJoinMeeting(@MessageBody() { roomId, userId }: MeetSession, @ConnectedSocket() socket: Socket) {
     try {
       if (!roomId || !userId) return;
       const isModerator = this.meetService.addClient(roomId, userId);
       socket.join(roomId);
-      socket.emit('joined', { isModerator });
+      const questions = await this.meetService.listQuestions(roomId);
+      socket.emit('joined', { isModerator, questions: questions });
     } catch (error) {
       socket.emit('error', { message: error.message ?? 'unkown error occured' });
     }
@@ -63,8 +64,6 @@ export class MeetGateway {
         username: username,
         created_at: new Date().toISOString(),
       };
-      console.log(resp);
-
       await this.meetService.saveResponse(questionId, resp.id, username, answer);
       this.server.to(meetId).emit('answer', { answer: resp });
     } catch (error) {
