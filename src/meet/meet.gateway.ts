@@ -36,14 +36,14 @@ export class MeetGateway {
   }
 
   @SubscribeMessage('question')
-  handleQuestion(@MessageBody() { meetId, question }: QuestionDTO, @ConnectedSocket() socket: Socket) {
+  async handleQuestion(@MessageBody() { meetId, question }: QuestionDTO, @ConnectedSocket() socket: Socket) {
     try {
       const resp: Question = {
         id: uuidv4(),
         question: question,
         created_at: new Date().toISOString(),
       };
-      this.meetService.saveQuestion(meetId, question);
+      await this.meetService.saveQuestion(meetId, resp.id, question);
       this.server.to(meetId).emit('question', { question: resp });
     } catch (error) {
       socket.emit('error', { message: error.message ?? 'unkown error occured' });
@@ -51,7 +51,10 @@ export class MeetGateway {
   }
 
   @SubscribeMessage('answer')
-  handleAnswer(@MessageBody() { meetId, questionId, username, answer }: AnswerDTO, @ConnectedSocket() socket: Socket) {
+  async handleAnswer(
+    @MessageBody() { meetId, questionId, username, answer }: AnswerDTO,
+    @ConnectedSocket() socket: Socket,
+  ) {
     try {
       const resp: Answer = {
         id: uuidv4(),
@@ -60,6 +63,9 @@ export class MeetGateway {
         username: username,
         created_at: new Date().toISOString(),
       };
+      console.log(resp);
+
+      await this.meetService.saveResponse(questionId, resp.id, username, answer);
       this.server.to(meetId).emit('answer', { answer: resp });
     } catch (error) {
       socket.emit('error', { message: error.message ?? 'unkown error occured' });

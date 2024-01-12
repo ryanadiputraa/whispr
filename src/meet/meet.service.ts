@@ -1,8 +1,7 @@
 import { Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 
 import { WsErrorResponse } from './dto/ws-event.dto';
-import { Question, Meet, MeetSessions } from './entities';
+import { Question, Meet, MeetSessions, Response } from './entities';
 
 @Injectable()
 export class MeetService {
@@ -15,6 +14,7 @@ export class MeetService {
   constructor(
     @Inject('MEET_REPOSITORY') private meetRepository: typeof Meet,
     @Inject('QUESTION_REPOSITORY') private questionRepository: typeof Question,
+    @Inject('RESPONSE_REPOSITORY') private responseRepository: typeof Response,
   ) {}
 
   generateMeetId(): string {
@@ -104,12 +104,29 @@ export class MeetService {
     }
   }
 
-  async saveQuestion(sessionId: string, question: string) {
+  async saveQuestion(sessionId: string, id: string, question: string) {
     try {
       await this.questionRepository.create({
-        id: uuidv4(),
+        id: id,
         meetId: sessionId,
         question: question,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async saveResponse(questionId: string, id: string, username: string, response: string) {
+    try {
+      this.logger.log('new response: ', questionId, username, response);
+      await this.responseRepository.create({
+        id: id,
+        questionId: questionId,
+        username: username,
+        response: response,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
