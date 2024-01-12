@@ -1,5 +1,5 @@
-import { Meet } from './meet';
+import { Meet, MeetSessions } from './meet';
 import { Question } from './question';
 import { Response } from './response';
 
-export { Meet, Question, Response };
+export { Meet, MeetSessions, Question, Response };

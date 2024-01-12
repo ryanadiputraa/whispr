@@ -43,6 +43,7 @@ export class MeetGateway {
         question: question,
         created_at: new Date().toISOString(),
       };
+      this.meetService.saveQuestion(meetId, question);
       this.server.to(meetId).emit('question', { question: resp });
     } catch (error) {
       socket.emit('error', { message: error.message ?? 'unkown error occured' });
