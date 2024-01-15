@@ -10,7 +10,7 @@ export class WsErrorResponse extends Error {
 export interface Question {
   id: string;
   question: string;
-  created_at: string;
+  createdAt: string;
 }
 
 export interface QuestionDTO {
@@ -22,8 +22,8 @@ export interface Answer {
   id: string;
   questionId: string;
   username: string;
-  answer: string;
-  created_at: string;
+  response: string;
+  createdAt: string;
 }
 
 export interface AnswerDTO {

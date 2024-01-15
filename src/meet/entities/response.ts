@@ -12,7 +12,7 @@ import {
 
 import { Question } from '.';
 
-@Table
+@Table({ tableName: 'responses', underscored: true })
 export class Response extends Model {
   @PrimaryKey
   @Default(DataType.UUID)

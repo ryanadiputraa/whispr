@@ -25,6 +25,19 @@ export class MeetGateway {
     }
   }
 
+  @SubscribeMessage('end')
+  async handleEndMeet(@MessageBody() { roomId, userId }: MeetSession, @ConnectedSocket() socket: Socket) {
+    try {
+      if (!roomId || !userId) return;
+      console.log(roomId);
+
+      this.server.to(roomId).emit('end');
+      await this.meetService.endMeet(roomId);
+    } catch (error) {
+      socket.emit('error', { message: error.message ?? 'unkown error occured' });
+    }
+  }
+
   @SubscribeMessage('leave')
   async handleLeaveMeeting(@MessageBody() { roomId, userId }: MeetSession, @ConnectedSocket() socket: Socket) {
     if (!roomId || !userId) return;
@@ -42,7 +55,7 @@ export class MeetGateway {
       const resp: Question = {
         id: uuidv4(),
         question: question,
-        created_at: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       };
       await this.meetService.saveQuestion(meetId, resp.id, question);
       this.server.to(meetId).emit('question', { question: resp });
@@ -60,9 +73,9 @@ export class MeetGateway {
       const resp: Answer = {
         id: uuidv4(),
         questionId: questionId,
-        answer: answer,
+        response: answer,
         username: username,
-        created_at: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       };
       await this.meetService.saveResponse(questionId, resp.id, username, answer);
       this.server.to(meetId).emit('answer', { answer: resp });

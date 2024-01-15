@@ -20,7 +20,7 @@ export type MeetSessions = {
   };
 };
 
-@Table({ timestamps: false })
+@Table({ tableName: 'meets', underscored: true, timestamps: false })
 export class Meet extends Model {
   @PrimaryKey
   @Default(DataType.UUID)

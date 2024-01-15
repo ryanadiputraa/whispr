@@ -1,7 +1,7 @@
 import { Meet } from 'meet/entities';
 import { Column, DataType, Default, HasMany, Model, NotNull, PrimaryKey, Table } from 'sequelize-typescript';
 
-@Table
+@Table({ tableName: 'users', underscored: true })
 export class User extends Model {
   @PrimaryKey
   @Default(DataType.UUID)
