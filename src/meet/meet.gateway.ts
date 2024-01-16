@@ -29,8 +29,6 @@ export class MeetGateway {
   async handleEndMeet(@MessageBody() { roomId, userId }: MeetSession, @ConnectedSocket() socket: Socket) {
     try {
       if (!roomId || !userId) return;
-      console.log(roomId);
-
       this.server.to(roomId).emit('end');
       await this.meetService.endMeet(roomId);
     } catch (error) {
@@ -42,7 +40,7 @@ export class MeetGateway {
   async handleLeaveMeeting(@MessageBody() { roomId, userId }: MeetSession, @ConnectedSocket() socket: Socket) {
     if (!roomId || !userId) return;
     try {
-      await this.meetService.deleteClient(roomId, userId);
+      // await this.meetService.deleteClient(roomId, userId);
       socket.leave(roomId);
     } catch (error) {
       socket.emit('error', { message: error.message ?? 'unkown error occured' });
