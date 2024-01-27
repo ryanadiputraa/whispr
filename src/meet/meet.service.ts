@@ -66,6 +66,14 @@ export class MeetService {
     }
   }
 
+  async ListMeetByUserId(userId: string): Promise<Meet[]> {
+    return await this.meetRepository.findAll({
+      where: {
+        userId: userId,
+      },
+    });
+  }
+
   addClient(sessionId: string, clientId: string): boolean {
     try {
       if (!this.meetSessions[sessionId]) throw new WsErrorResponse(`meeting ${sessionId} session didn' exists`);
