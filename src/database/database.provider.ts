@@ -4,6 +4,20 @@ import { MeetSentiment } from 'meet-sentiment/entities/meet-sentiment';
 import { Meet, Question, Response } from 'meet/entities';
 import { User } from 'user/entities/user';
 
+const conf =
+  process.env.NODE_ENV === 'prod'
+    ? {
+        dialectOptions: {
+          ssl: {
+            rejectUnauthorized: true,
+          },
+        },
+        define: {
+          timestamps: false,
+        },
+      }
+    : {};
+
 export const databaseProviders = [
   {
     provide: 'SEQUELIZE',
@@ -16,6 +30,7 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
         timezone: '+00:00',
+        ...conf,
       });
       sequelize.addModels([User, Meet, Question, Response, MeetSentiment]);
       await sequelize.sync();
