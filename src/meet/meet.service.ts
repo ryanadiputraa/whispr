@@ -71,6 +71,7 @@ export class MeetService {
       where: {
         userId: userId,
       },
+      attributes: ['id', 'name', 'created_at', 'ended_at'],
     });
   }
 
