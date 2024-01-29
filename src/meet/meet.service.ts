@@ -32,7 +32,7 @@ export class MeetService {
     return idSets.join('-');
   }
 
-  async createNewMeet(clientId: string): Promise<string> {
+  async createNewMeet(clientId: string, name: string): Promise<string> {
     try {
       const sessionId = this.generateMeetId();
       this.logger.log(`new meeting session: ${sessionId}`);
@@ -43,7 +43,7 @@ export class MeetService {
       await this.meetRepository.create({
         id: sessionId,
         userId: clientId,
-        name: 'Silent Meet', // TODO: get user input
+        name: name,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
