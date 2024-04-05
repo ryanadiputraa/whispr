@@ -14,6 +14,12 @@ yarn install
 
 ## Development
 
+- Start DB using docker compose:
+
+```bash
+docker-compose up -d
+```
+
 - Copy `.env.example` file into `.env.development` and adjust your env
 - Start development server
 

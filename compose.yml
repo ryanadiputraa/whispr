@@ -1,0 +1,14 @@
+services:
+  db:
+    image: mysql:8.3
+    restart: always
+    environment:
+      MYSQL_DATABASE: whispr
+      MYSQL_ROOT_PASSWORD: whisprpass
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
