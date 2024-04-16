@@ -30,6 +30,12 @@ export const databaseProviders = [
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
         timezone: '+00:00',
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
         ...conf,
       });
       sequelize.addModels([User, Meet, Question, Response, MeetSentiment]);
