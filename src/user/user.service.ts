@@ -29,8 +29,8 @@ export class UserService {
         password: hashedPassword,
         firstName: first_name,
         lastName: last_name,
-        created_at: new Date(),
-        updated_at: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       this.logger.log(`registering new user: ${data.id}`);
 
