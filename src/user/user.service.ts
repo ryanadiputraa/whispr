@@ -40,7 +40,7 @@ export class UserService {
       if (error instanceof UniqueConstraintError) {
         throw new BadRequestException({ message: 'email already taken' });
       }
-      this.logger.error('error');
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -57,7 +57,7 @@ export class UserService {
       return user;
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      this.logger.error('error');
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
@@ -73,7 +73,7 @@ export class UserService {
       return user;
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      this.logger.error('error');
+      this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
