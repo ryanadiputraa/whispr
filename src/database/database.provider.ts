@@ -32,7 +32,6 @@ export const databaseProviders = [
         timezone: '+00:00',
         dialectOptions: {
           ssl: {
-            require: true,
             rejectUnauthorized: false,
           },
         },
