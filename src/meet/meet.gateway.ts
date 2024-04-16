@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Answer, AnswerDTO, MeetSession, Question, QuestionDTO } from './dto/ws-event.dto';
 import { MeetService } from './meet.service';
 
-@WebSocketGateway(Number(process.env.WS_PORT) || 8081, { cors: '*' })
+@WebSocketGateway(0, { cors: '*' })
 export class MeetGateway {
   @WebSocketServer()
   server: Server;

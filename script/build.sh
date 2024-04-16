@@ -1,26 +1,18 @@
 #!/bin/bash
 # Extract command line arguments
 server_port="$1"
-server_ws_port="$2"
 
-mysql_host="$3"
-mysql_port="$4"
-mysql_user="$5"
-mysql_password="$6"
-mysql_db="$7"
+mysql_host="$2"
+mysql_port="$3"
+mysql_user="$4"
+mysql_password="$5"
+mysql_db="$6"
 
-jwt_secret="$8"
-
-google_redirect_url="$9"
-google_client_id="${10}"
-google_client_secret="${11}"
-google_state="${12}"
-
+jwt_secret="$7"
 
 # Define the ENV content with placeholders replaced by command line arguments
 ENV_CONTENT="
 PORT=$server_port
-WS_PORT=$server_ws_port
 
 DB_HOST=$mysql_host
 DB_PORT=$mysql_port
