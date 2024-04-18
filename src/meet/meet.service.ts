@@ -1,6 +1,6 @@
 import { Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
-import { MeetDetails } from './dto/meet.dto';
+import { Topic } from './dto/meet.dto';
 import { WsErrorResponse } from './dto/ws-event.dto';
 import { Meet, MeetSessions, Question, Response } from './entities';
 
@@ -76,7 +76,7 @@ export class MeetService {
     });
   }
 
-  async getMeetDetails(meetId: string, userId: string): Promise<MeetDetails> {
+  async getMeetDetails(meetId: string, userId: string): Promise<Topic[]> {
     try {
       const details = await this.questionRepository.findAll({
         where: { meetId: meetId },
@@ -84,6 +84,7 @@ export class MeetService {
           {
             model: Response,
             required: false,
+            order: [['createdAt', 'ASC']],
           },
           {
             model: Meet,
@@ -91,17 +92,18 @@ export class MeetService {
             where: { userId: userId },
           },
         ],
+        order: [['createdAt', 'ASC']],
       });
 
-      const meetDetails: MeetDetails = {};
+      const meetDetails: Topic[] = [];
       details.forEach((detail) => {
         const { question, createdAt, updatedAt, responses } = detail;
-        meetDetails[detail.id] = {
+        meetDetails.push({
           question,
           createdAt: createdAt.toISOString(),
           updatedAt: updatedAt.toISOString(),
           response: responses,
-        };
+        });
       });
 
       return meetDetails;

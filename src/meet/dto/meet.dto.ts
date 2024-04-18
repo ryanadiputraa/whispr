@@ -6,11 +6,9 @@ export class CreateMeetDto {
   name: string;
 }
 
-export interface MeetDetails {
-  [topicId: string]: {
-    question: string;
-    createdAt: string;
-    updatedAt: string;
-    response: Response[];
-  };
+export interface Topic {
+  question: string;
+  createdAt: string;
+  updatedAt: string;
+  response: Response[];
 }
