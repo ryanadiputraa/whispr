@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Request, UseGuards } from '@nestjs/common';
 
 import { AuthGuard } from 'auth/auth.guard';
 import { handleServiceException } from 'utils/exception';
@@ -14,7 +14,19 @@ export class MeetController {
   async getUserMeets(@Request() req) {
     try {
       return {
-        data: await this.meetService.ListMeetByUserId(req.user?.sub ?? ''),
+        data: await this.meetService.listMeetByUserId(req.user?.sub ?? ''),
+      };
+    } catch (error) {
+      handleServiceException(error, MeetController.name);
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Get(':meetId')
+  async getMeetDetails(@Request() req, @Param() params: { meetId: string }) {
+    try {
+      return {
+        data: await this.meetService.getMeetDetails(params.meetId, req.user?.sub ?? ''),
       };
     } catch (error) {
       handleServiceException(error, MeetController.name);

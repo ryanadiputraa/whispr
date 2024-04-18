@@ -1,7 +1,8 @@
 import { Inject, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
+import { MeetDetails } from './dto/meet.dto';
 import { WsErrorResponse } from './dto/ws-event.dto';
-import { Question, Meet, MeetSessions, Response } from './entities';
+import { Meet, MeetSessions, Question, Response } from './entities';
 
 @Injectable()
 export class MeetService {
@@ -66,13 +67,48 @@ export class MeetService {
     }
   }
 
-  async ListMeetByUserId(userId: string): Promise<Meet[]> {
+  async listMeetByUserId(userId: string): Promise<Meet[]> {
     return await this.meetRepository.findAll({
       where: {
         userId: userId,
       },
       attributes: ['id', 'name', 'created_at', 'ended_at'],
     });
+  }
+
+  async getMeetDetails(meetId: string, userId: string): Promise<MeetDetails> {
+    try {
+      const details = await this.questionRepository.findAll({
+        where: { meetId: meetId },
+        include: [
+          {
+            model: Response,
+            required: false,
+          },
+          {
+            model: Meet,
+            required: true,
+            where: { userId: userId },
+          },
+        ],
+      });
+
+      const meetDetails: MeetDetails = {};
+      details.forEach((detail) => {
+        const { question, createdAt, updatedAt, responses } = detail;
+        meetDetails[detail.id] = {
+          question,
+          createdAt: createdAt.toISOString(),
+          updatedAt: updatedAt.toISOString(),
+          response: responses,
+        };
+      });
+
+      return meetDetails;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
   }
 
   addClient(sessionId: string, clientId: string): boolean {
